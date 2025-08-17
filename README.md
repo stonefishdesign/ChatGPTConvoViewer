@@ -1,70 +1,170 @@
-# Getting Started with Create React App
+# ChatGPT Conversation Viewer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern web application for viewing and navigating through conversation data with support for branching conversations, Markdown rendering, and image display.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+- **Conversation Management**: Load and view multiple conversations from JSON files
+- **Branching Support**: Navigate through conversations with multiple response branches
+- **Markdown Rendering**: Full Markdown support for rich text content
+- **Image Display**: Support for image assets within conversations
+- **Responsive Design**: Modern, chatroom-like interface that works on all devices
+- **Dual Versions**: Both React application and standalone HTML versions available
 
-### `npm start`
+## 📁 Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+/
+├── src/                          # React application source
+│   ├── components/               # Modular React components
+│   │   ├── Sidebar/             # Conversation list sidebar
+│   │   ├── ConversationView/    # Main conversation display
+│   │   ├── ConversationHeader/  # Conversation title and metadata
+│   │   ├── ConversationTree/    # Hierarchical conversation structure
+│   │   ├── Message/             # Individual message component
+│   │   └── BranchSelector/      # Branch switching UI
+│   ├── App.js                   # Main application component
+│   └── index.js                 # Application entry point
+├── chats.html                    # Standalone HTML version
+├── conversations.json            # Sample conversation data
+└── package.json                  # Project dependencies
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Installation & Setup
 
-### `npm test`
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### React Application
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd Zoy
+   ```
 
-### `npm run build`
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Start the development server:
+   ```bash
+   npm start
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Standalone HTML Version
+Simply open `chats.html` in any modern web browser. No server or installation required!
 
-### `npm run eject`
+## 📖 Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Loading Conversations
+1. **React App**: Place your `conversations.json` file in the `public/` folder
+2. **HTML Version**: Use the file input button to load any JSON file
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Navigating Conversations
+- **Left Sidebar**: Click on conversation titles to switch between conversations
+- **Main View**: View the full conversation content with proper formatting
+- **Branch Selection**: Use the small round buttons below messages to switch between response branches
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Supported Content Types
+- **Text**: Full Markdown support (headers, lists, code blocks, links, etc.)
+- **Images**: Automatic detection and display of image assets
+- **Mixed Content**: Messages can contain both text and images
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🔧 Technical Details
 
-## Learn More
+### React Components
+- **Modular Architecture**: Each component has its own CSS file for maintainability
+- **State Management**: Uses React hooks for local state management
+- **Props Flow**: Clean data flow from parent to child components
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Data Structure
+The application expects conversation data in this format:
+```json
+[
+  {
+    "id": "conversation_id",
+    "title": "Conversation Title",
+    "create_time": 1234567890,
+    "update_time": 1234567890,
+    "mapping": {
+      "node_id": {
+        "message": {
+          "author": { "role": "user|assistant|system" },
+          "content": "message content or parts array",
+          "create_time": 1234567890
+        },
+        "children": ["child_node_id"],
+        "parent": "parent_node_id"
+      }
+    }
+  }
+]
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Key Features Implementation
+- **Root Node Detection**: Automatically finds conversation root nodes
+- **Content Parsing**: Handles various content structures safely
+- **Message Filtering**: Filters out system messages, tool messages, and empty content
+- **Branch Navigation**: Maintains branch selection state per message
 
-### Code Splitting
+## 🎨 Styling
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Design Principles
+- **Chatroom Interface**: User messages right-aligned, assistant messages left-aligned
+- **Modern UI**: Clean, minimal design with proper spacing and typography
+- **Responsive Layout**: Flexbox-based layout that adapts to different screen sizes
 
-### Analyzing the Bundle Size
+### CSS Architecture
+- **Component-Scoped**: Each React component has its own CSS file
+- **Consistent Variables**: Shared color scheme and spacing
+- **Markdown Styling**: Comprehensive styles for all Markdown elements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🚀 Available Scripts
 
-### Making a Progressive Web App
+- `npm start` - Start development server
+- `npm run build` - Build for production
+- `npm test` - Run test suite
+- `npm run eject` - Eject from Create React App (one-way operation)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🌐 Browser Support
 
-### Advanced Configuration
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📝 Dependencies
 
-### Deployment
+- **React 19.1.1** - UI framework
+- **react-markdown 10.1.0** - Markdown rendering
+- **Create React App** - Build tooling and configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🤝 Contributing
 
-### `npm run build` fails to minify
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📄 License
+
+This project is private and proprietary.
+
+## 🆘 Troubleshooting
+
+### Common Issues
+- **Conversations not displaying**: Check JSON format and ensure root nodes exist
+- **Images not showing**: Verify image files exist in the same directory
+- **Branch switching not working**: Check browser console for JavaScript errors
+
+### Debug Mode
+The HTML version includes console logging for debugging. Open browser developer tools to see detailed information about conversation loading and rendering.
+
+---
+
+**Note**: This application is designed to work with specific conversation data formats. Ensure your JSON files follow the expected structure for optimal functionality.
