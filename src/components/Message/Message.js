@@ -86,7 +86,11 @@ const Message = ({ message }) => {
   if (message.metadata?.is_contextual_retry_user_message === true) return null;
   
   return (
-    <div className={`message ${role}`} title={JSON.stringify(message)}>
+    <div 
+      className={`message ${role}`} 
+      title={JSON.stringify(message)}
+      data-model-slug={message.metadata?.model_slug || ''}
+    >
       <div className="message-header">
         <span className="role-badge">{role}</span>
         {message.create_time && (

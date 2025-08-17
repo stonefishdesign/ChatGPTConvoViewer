@@ -584,6 +584,7 @@
                 this.conversationSummaries = [];
                 this.selectedConversation = null;
                 this.selectedBranches = {};
+                this.scrollPositions = {}; // Store scroll positions for each conversation
                 
                 this.init();
             }
@@ -672,7 +673,7 @@
                 });
             }
 
-            findPathToCurrentNode(mapping) {
+            findPathToCurrentNode(mapping, current_node) {
                 // Find the root node to start from
                 let rootNode = mapping['client-created-root'];
                 
@@ -693,8 +694,8 @@
                 let targetNodeId = null;
                 
                 // If we have access to conversation.current_node, use that
-                if (this.selectedConversation.current_node && mapping[this.selectedConversation.current_node]) {
-                    targetNodeId = this.selectedConversation.current_node;
+                if (current_node && mapping[current_node]) {
+                    targetNodeId = current_node;
                 } else {
                     // Otherwise, find the last message in the mapping
                     const allNodeIds = Object.keys(mapping);
@@ -726,7 +727,7 @@
                         // Reached the root
                         break;
                     }
-                    }
+                }
                 
                 // Convert path to branch selections
                 const branchSelections = {};
@@ -767,10 +768,27 @@
             }
 
             selectConversation(conversation) {
+                // Save current scroll position for the current conversation
+                if (this.selectedConversation) {
+                    const conversationContent = document.querySelector('.conversation-content');
+                    if (conversationContent) {
+                        this.scrollPositions[this.selectedConversation.id] = conversationContent.scrollTop;
+                    }
+                }
+                
                 this.selectedConversation = conversation;
                 this.selectedBranches = {};
                 this.renderSidebar();
                 this.renderConversationView();
+                
+                // Restore scroll position for the new conversation
+                setTimeout(() => {
+                    const newConversationContent = document.querySelector('.conversation-content');
+                    if (newConversationContent && conversation) {
+                        const savedPosition = this.scrollPositions[conversation.id] || 0;
+                        newConversationContent.scrollTop = savedPosition;
+                    }
+                }, 0);
             }
 
             renderConversationView() {
@@ -813,18 +831,23 @@
                 if (!this.selectedConversation || !this.selectedConversation.mapping) return '';
 
                 // Find the path to current_node and determine correct branch selections
-                const correctBranches = this.findPathToCurrentNode(this.selectedConversation.mapping);
+                const correctBranches = this.findPathToCurrentNode(this.selectedConversation.mapping, this.selectedConversation.current_node);
                 
-                // Apply correct branch selections if they differ from current selections
-                const hasChanges = Object.keys(correctBranches).some(key => 
-                    this.selectedBranches[key] !== correctBranches[key]
-                );
+                // Only apply automatic branch selection if no branches have been manually selected
+                const hasManualSelections = Object.keys(this.selectedBranches).length > 0;
                 
-                if (hasChanges) {
-                    // Update all branch selections at once
-                    Object.entries(correctBranches).forEach(([nodeId, branchIndex]) => {
-                        this.selectedBranches[nodeId] = branchIndex;
-                    });
+                if (!hasManualSelections) {
+                    // Only update if there are differences
+                    const hasChanges = Object.keys(correctBranches).some(key => 
+                        this.selectedBranches[key] !== correctBranches[key]
+                    );
+                    
+                    if (hasChanges) {
+                        // Update all branch selections at once
+                        Object.entries(correctBranches).forEach(([nodeId, branchIndex]) => {
+                            this.selectedBranches[nodeId] = branchIndex;
+                        });
+                    }
                 }
 
                 const messages = [];
@@ -963,7 +986,7 @@
                 if (message.metadata?.is_contextual_retry_user_message === true) return '';
                 
                 return `
-                    <div class="message ${role}">
+                    <div class="message ${role}" data-model-slug="${message.metadata?.model_slug || ''}">
                         <div class="message-header">
                             <span class="role-badge">${role}</span>
                             ${message.create_time ? `<span class="timestamp">${this.formatDate(message.create_time)}</span>` : ''}
@@ -996,8 +1019,25 @@
             }
 
             selectBranch(messageNodeId, branchIndex) {
+                // Save current scroll position for the current conversation
+                if (this.selectedConversation) {
+                    const conversationContent = document.querySelector('.conversation-content');
+                    if (conversationContent) {
+                        this.scrollPositions[this.selectedConversation.id] = conversationContent.scrollTop;
+                    }
+                }
+                
                 this.selectedBranches[messageNodeId] = branchIndex;
                 this.renderConversationView();
+                
+                // Restore scroll position after rendering
+                setTimeout(() => {
+                    const newConversationContent = document.querySelector('.conversation-content');
+                    if (newConversationContent && this.selectedConversation) {
+                        const savedPosition = this.scrollPositions[this.selectedConversation.id] || 0;
+                        newConversationContent.scrollTop = savedPosition;
+                    }
+                }, 0);
             }
 
             showError(message) {
