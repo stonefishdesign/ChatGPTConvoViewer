@@ -1,0 +1,22 @@
+.conversation-tree {
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.message-container {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure branch selector aligns with the message */
+.message-container .branch-selector {
+  align-self: flex-start;
+  margin-left: 0;
+}
+
+.message-container .message.user + .branch-selector {
+  align-self: flex-end;
+  margin-right: 0;
+}

@@ -1,0 +1,27 @@
+.conversation-header {
+  padding: 24px 32px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.conversation-header h1 {
+  color: #212529;
+  margin-bottom: 8px;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.conversation-info {
+  display: flex;
+  gap: 24px;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .conversation-header {
+    padding: 16px 20px;
+  }
+}

@@ -1,0 +1,140 @@
+.message {
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  max-width: 70%;
+  margin-bottom: 16px;
+}
+
+.message.user {
+  background-color: #e3f2fd;
+  color: #212529;
+  border-color: #e3f2fd;
+  margin-left: auto;
+  margin-right: 0;
+  max-width: 60%;
+}
+
+.message.assistant {
+  background-color: #f8f9fa;
+  color: #212529;
+  border: none;
+  margin-left: 0;
+  margin-right: auto;
+  max-width: 90%;
+}
+
+.message.system {
+  background-color: #6c757d;
+  color: #ffffff;
+  border-color: #6c757d;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 50%;
+  font-size: 0.9rem;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 16px;
+}
+
+.role-badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: inherit;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.message.user .role-badge {
+  background-color: rgba(21, 101, 192, 0.2);
+  color: #212529;
+}
+
+.message.assistant .role-badge {
+  background-color: #e9ecef;
+  color: #6c757d;
+}
+
+.message.system .role-badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.message.user .timestamp {
+  color: #212529;
+}
+
+.message.assistant .timestamp {
+  color: #6c757d;
+}
+
+.message.system .timestamp {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.message-content {
+  line-height: 1.5;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.message.user .message-content {
+  color: #212529;
+}
+
+.message.assistant .message-content {
+  color: #212529;
+}
+
+.message.system .message-content {
+  color: #ffffff;
+}
+
+/* Image Content Styles */
+.image-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.conversation-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.conversation-image:hover {
+  transform: scale(1.02);
+}
+
+.image-error {
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: 1px dashed #dee2e6;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 0.9rem;
+  text-align: center;
+  font-style: italic;
+}
