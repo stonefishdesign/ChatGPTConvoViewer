@@ -40,7 +40,7 @@ A modern web application for viewing and navigating through conversation data wi
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd Zoy
+   cd [directory]
    ```
 
 2. Install dependencies:

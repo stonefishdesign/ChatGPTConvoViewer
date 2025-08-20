@@ -31,7 +31,9 @@ const Message = ({ message }) => {
         if (part.content_type === 'image_asset_pointer' && part.asset_pointer) {
           const assetPointer = part.asset_pointer;
           if (assetPointer.startsWith('file-service://')) {
-            const filename = assetPointer.replace('file-service://', '') + '.jpeg';
+            const findImage = message.metadata.attachments.find(attachment => attachment.id === assetPointer.replace('file-service://', ''));
+            const filename = findImage.id + '-' + findImage.name;
+
             return (
               <div key={index} className="image-content">
                 <img 
@@ -88,8 +90,8 @@ const Message = ({ message }) => {
   return (
     <div 
       className={`message ${role}`} 
-      title={JSON.stringify(message)}
-      data-model-slug={message.metadata?.model_slug || ''}
+      data-message={JSON.stringify(message)}
+      title={message.metadata?.model_slug || ''}
     >
       <div className="message-header">
         <span className="role-badge">{role}</span>

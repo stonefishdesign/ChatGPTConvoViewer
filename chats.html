@@ -928,7 +928,8 @@
                             if (part.content_type === 'image_asset_pointer' && part.asset_pointer) {
                                 const assetPointer = part.asset_pointer;
                                 if (assetPointer.startsWith('file-service://')) {
-                                    const filename = assetPointer.replace('file-service://', '') + '.jpeg';
+                                    const findImage = message.metadata.attachments.find(attachment => attachment.id === assetPointer.replace('file-service://', ''));
+                                    const filename = findImage.id + '-' + findImage.name;
                                     return `
                                         <div class="text-content">
                                             <div class="image-content">
@@ -986,7 +987,7 @@
                 if (message.metadata?.is_contextual_retry_user_message === true) return '';
                 
                 return `
-                    <div class="message ${role}" data-model-slug="${message.metadata?.model_slug || ''}">
+                    <div class="message ${role}" title="${message.metadata?.model_slug || ''}">
                         <div class="message-header">
                             <span class="role-badge">${role}</span>
                             ${message.create_time ? `<span class="timestamp">${this.formatDate(message.create_time)}</span>` : ''}
