@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversations Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #f5f5f5;
+        }
+
+        .app {
+            display: flex;
+            height: 100vh;
+            background-color: #ffffff;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 300px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar h2 {
+            padding: 20px;
+            margin: 0;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+            background-color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .conversation-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .conversation-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .conversation-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .conversation-item.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .conversation-title {
+            font-weight: 500;
+            color: #212529;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .conversation-meta {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        /* File Input Styles */
+        .file-input-container {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+            background-color: #ffffff;
+        }
+
+        .file-button {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .file-button:hover {
+            background-color: #0056b3;
+        }
+
+        .file-info {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .conversation-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .conversation-header {
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+
+        .conversation-header h1 {
+            color: #212529;
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .conversation-info {
+            display: flex;
+            gap: 24px;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Conversation Content Styles */
+        .conversation-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+            background-color: #ffffff;
+            min-height: 0;
+            position: relative;
+            height: 100%; 
+            max-height: calc(100vh - 100px);
+        }
+
+        .conversation-tree {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .message-container {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Message Styles */
+        .message {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            max-width: 70%;
+            margin-bottom: 16px;
+        }
+
+        .message.user {
+            background-color: #e3f2fd;
+            color: #212529;
+            border-color: #e3f2fd;
+            margin-left: auto;
+            margin-right: 0;
+            max-width: 60%;
+        }
+
+        .message.assistant {
+            background-color: #f8f9fa;
+            color: #212529;
+            border: none;
+            margin-left: 0;
+            margin-right: auto;
+            max-width: 90%;
+        }
+
+        .message.system {
+            background-color: #6c757d;
+            color: #ffffff;
+            border-color: #6c757d;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 50%;
+            font-size: 0.9rem;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 16px;
+        }
+
+        .role-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: inherit;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .message.user .role-badge {
+            background-color: rgba(21, 101, 192, 0.2);
+            color: #1565c0;
+        }
+
+        .message.assistant .role-badge {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+
+        .message.system .role-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .timestamp {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            flex-shrink: 0;
+        }
+
+        .message.user .timestamp {
+            color: #1565c0;
+        }
+
+        .message.assistant .timestamp {
+            color: #6c757d;
+        }
+
+        .message.system .timestamp {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .message-content {
+            line-height: 1.5;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            color: #212529;
+        }
+
+        .message.assistant .message-content {
+            color: #212529;
+        }
+
+        .message.system .message-content {
+            color: #ffffff;
+        }
+
+        /* Branch Selector Styles */
+        .branch-selector {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .branch-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .branch-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .branch-button {
+            padding: 4px 10px;
+            border: 1px solid #dee2e6;
+            background-color: #ffffff;
+            color: #495057;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            min-width: 60px;
+        }
+
+        .branch-button:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+            transform: translateY(-1px);
+        }
+
+        .branch-button.active {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #dc3545;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* No Conversation State */
+        .no-conversation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        /* Scrollbar Styling */
+        .conversation-list::-webkit-scrollbar,
+        .conversation-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .conversation-list::-webkit-scrollbar-track,
+        .conversation-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .conversation-list::-webkit-scrollbar-thumb,
+        .conversation-content::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .conversation-list::-webkit-scrollbar-thumb:hover,
+        .conversation-content::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Ensure branch selector aligns with the message */
+        .message-container .branch-selector {
+            align-self: flex-start;
+            margin-left: 0;
+        }
+
+        .message-container .message.user + .branch-selector {
+            align-self: flex-end;
+            margin-right: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .app {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 200px;
+            }
+            
+            .conversation-header {
+                padding: 16px 20px;
+            }
+            
+            .conversation-content {
+                padding: 20px;
+            }
+            
+            .branch-buttons {
+                flex-direction: row;
+            }
+            
+            .branch-selector {
+                margin-top: 6px;
+                padding: 6px 10px;
+            }
+        }
+
+        /* Markdown content styles */
+        .text-content {
+            line-height: 1.6;
+        }
+
+        .text-content h1, .text-content h2, .text-content h3, 
+        .text-content h4, .text-content h5, .text-content h6 {
+            margin: 16px 0 8px 0;
+            color: inherit;
+        }
+
+        .text-content h1 { font-size: 1.5rem; }
+        .text-content h2 { font-size: 1.3rem; }
+        .text-content h3 { font-size: 1.1rem; }
+
+        .text-content p {
+            margin: 8px 0;
+        }
+
+        .text-content ul, .text-content ol {
+            margin: 8px 0;
+            padding-left: 24px;
+        }
+
+        .text-content li {
+            margin: 4px 0;
+        }
+
+        .text-content blockquote {
+            border-left: 4px solid #e9ecef;
+            margin: 12px 0;
+            padding: 8px 16px;
+            background-color: #f8f9fa;
+            font-style: italic;
+        }
+
+        .text-content code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .text-content pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        .text-content pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .text-content a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .text-content a:hover {
+            text-decoration: underline;
+        }
+
+        .text-content strong {
+            font-weight: 600;
+        }
+
+        .text-content em {
+            font-style: italic;
+        }
+
+        /* Image styles */
+        .image-content {
+            margin: 8px 0;
+        }
+
+        .conversation-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+
+        .image-error {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Audio content styles */
+        .audio-content {
+            margin: 8px 0;
+        }
+
+        .conversation-audio {
+            width: 100%;
+            max-width: 400px;
+            margin: 8px 0;
+        }
+
+        .audio-error {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="sidebar">
+            <h2>Conversations</h2>
+            <div class="file-input-container">
+                <input type="file" id="fileInput" accept=".html" style="display: none;">
+                <button class="file-button" onclick="document.getElementById('fileInput').click()">
+                    📁 Load HTML Conversation File
+                </button>
+                <div class="file-info" id="fileInfo"></div>
+            </div>
+            <div class="conversation-list" id="conversationList">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    Select an HTML file to load conversations
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div id="conversationView">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    Loading conversations...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Markdown library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        class ConversationsViewer {
+            constructor() {
+                this.conversations = [];
+                this.conversationSummaries = [];
+                this.selectedConversation = null;
+                this.selectedBranches = {};
+                this.scrollPositions = {}; // Store scroll positions for each conversation
+                this.assetsJson = {}; // Store asset mapping for images and audio
+                
+                this.init();
+            }
+
+            init() {
+                this.setupFileInput();
+                this.renderSidebar();
+                this.renderConversationView();
+            }
+
+            setupFileInput() {
+                const fileInput = document.getElementById('fileInput');
+                fileInput.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        this.loadConversationsFromFile(file);
+                    }
+                });
+            }
+
+            async loadConversationsFromFile(file) {
+                try {
+                    this.showLoading();
+                    const text = await file.text();
+                    
+                    // Parse HTML content to extract jsonData and assetsJson
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+                    const scripts = doc.querySelectorAll('script');
+                    
+                    let jsonData = null;
+                    let assetsJson = null;
+                    
+                    // Extract jsonData and assetsJson from script tags
+                    for (let i = 0; i < scripts.length; i++) {
+                        const script = scripts[i];
+                        const scriptContent = script.textContent;
+                        
+                        // Look for jsonData in various formats
+                        if (scriptContent.includes('jsonData')) {
+                            // Try multiple extraction patterns
+                            const patterns = [
+                                /var jsonData = (\[[\s\S]*?\]);/,
+                                /jsonData = (\[[\s\S]*?\]);/,
+                                /var jsonData = (\[[\s\S]*?\]);/g,
+                                /jsonData\s*=\s*(\[[\s\S]*?\]);/
+                            ];
+                            
+                            let extracted = false;
+                            for (let pattern of patterns) {
+                                const match = scriptContent.match(pattern);
+                                if (match) {
+                                    try {
+                                        jsonData = JSON.parse(match[1]);
+                                        extracted = true;
+                                        break;
+                                    } catch (e) {
+                                        // Pattern matched but JSON parsing failed, try next method
+                                    }
+                                }
+                            }
+                            
+                            // If regex failed, try alternative extraction methods
+                            if (!extracted) {
+                                // Method 1: Find the line with "var jsonData = [" and extract everything after the equals sign
+                                const lines = scriptContent.split('\n');
+                                for (let j = 0; j < lines.length; j++) {
+                                    const line = lines[j];
+                                    if (line.includes('var jsonData = [') || line.includes('jsonData = [')) {
+                                        // Extract everything after "jsonData = " or "var jsonData = "
+                                        let jsonString = line.replace(/.*jsonData\s*=\s*/, '');
+                                        
+                                        // If the JSON spans multiple lines, we need to find the end
+                                        if (!jsonString.includes('];')) {
+                                            let braceCount = 0;
+                                            
+                                            for (let char of jsonString) {
+                                                if (char === '[') braceCount++;
+                                                if (char === ']') braceCount--;
+                                            }
+                                            
+                                            // Continue from the next line if needed
+                                            for (let k = j + 1; k < lines.length && braceCount > 0; k++) {
+                                                const nextLine = lines[k];
+                                                jsonString += nextLine;
+                                                for (let char of nextLine) {
+                                                    if (char === '[') braceCount++;
+                                                    if (char === ']') braceCount--;
+                                                }
+                                            }
+                                        }
+                                        
+                                        // Clean up the JSON string
+                                        jsonString = jsonString.replace(/;$/, '');
+                                        
+                                        try {
+                                            jsonData = JSON.parse(jsonString);
+                                            extracted = true;
+                                            break;
+                                        } catch (e2) {
+                                            // Try next method
+                                        }
+                                    }
+                                }
+                                
+                                // Method 2: Try to find JSON array boundaries more carefully
+                                if (!extracted) {
+                                    const jsonStart = scriptContent.indexOf('var jsonData = [');
+                                    if (jsonStart === -1) {
+                                        const altStart = scriptContent.indexOf('jsonData = [');
+                                        if (altStart !== -1) {
+                                            const jsonString = scriptContent.substring(altStart).replace(/.*jsonData\s*=\s*/, '');
+                                            const jsonEnd = jsonString.indexOf('];');
+                                            if (jsonEnd !== -1) {
+                                                const cleanJson = jsonString.substring(0, jsonEnd + 1);
+                                                try {
+                                                    jsonData = JSON.parse(cleanJson);
+                                                    extracted = true;
+                                                } catch (e3) {
+                                                    // Try next method
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        const jsonString = scriptContent.substring(jsonStart).replace(/.*jsonData\s*=\s*/, '');
+                                        const jsonEnd = jsonString.indexOf('];');
+                                        if (jsonEnd !== -1) {
+                                            const cleanJson = jsonString.substring(0, jsonEnd + 1);
+                                            try {
+                                                jsonData = JSON.parse(cleanJson);
+                                                extracted = true;
+                                            } catch (e3) {
+                                                // Try next method
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Look for assetsJson
+                        if (scriptContent.includes('assetsJson')) {
+                            const patterns = [
+                                /var assetsJson = (\{[\s\S]*?\});/,
+                                /assetsJson = (\{[\s\S]*?\});/,
+                                /var assetsJson = (\{[\s\S]*?\});/g,
+                                /assetsJson\s*=\s*(\{[\s\S]*?\});/
+                            ];
+                            
+                            let extracted = false;
+                            for (let pattern of patterns) {
+                                const match = scriptContent.match(pattern);
+                                if (match) {
+                                    try {
+                                        assetsJson = JSON.parse(match[1]);
+                                        extracted = true;
+                                        break;
+                                    } catch (e) {
+                                        // Pattern matched but JSON parsing failed, try next method
+                                    }
+                                }
+                            }
+                            
+                            // If regex failed, try alternative extraction methods for assetsJson
+                            if (!extracted) {
+                                // Method 1: Find the line with "var assetsJson = {" and extract everything after the equals sign
+                                const lines = scriptContent.split('\n');
+                                for (let j = 0; j < lines.length; j++) {
+                                    const line = lines[j];
+                                    if (line.includes('var assetsJson = {') || line.includes('assetsJson = {')) {
+                                        // Extract everything after "assetsJson = " or "var assetsJson = "
+                                        let jsonString = line.replace(/.*assetsJson\s*=\s*/, '');
+                                        
+                                        // If the JSON spans multiple lines, we need to find the end
+                                        if (!jsonString.includes('};')) {
+                                            let braceCount = 0;
+                                            
+                                            for (let char of jsonString) {
+                                                if (char === '{') braceCount++;
+                                                if (char === '}') braceCount--;
+                                            }
+                                            
+                                            // Continue from the next line if needed
+                                            for (let k = j + 1; k < lines.length && braceCount > 0; k++) {
+                                                const nextLine = lines[k];
+                                                jsonString += nextLine;
+                                                for (let char of nextLine) {
+                                                    if (char === '{') braceCount++;
+                                                    if (char === '}') braceCount--;
+                                                }
+                                            }
+                                        }
+                                        
+                                        // Clean up the JSON string
+                                        jsonString = jsonString.replace(/;$/, '');
+                                        
+                                        try {
+                                            assetsJson = JSON.parse(jsonString);
+                                            extracted = true;
+                                            break;
+                                        } catch (e2) {
+                                            // Try next method
+                                        }
+                                    }
+                                }
+                                
+                                // Method 2: Try to find JSON object boundaries more carefully
+                                if (!extracted) {
+                                    const jsonStart = scriptContent.indexOf('var assetsJson = {');
+                                    if (jsonStart === -1) {
+                                        const altStart = scriptContent.indexOf('assetsJson = {');
+                                        if (altStart !== -1) {
+                                            const jsonString = scriptContent.substring(altStart).replace(/.*assetsJson\s*=\s*/, '');
+                                            const jsonEnd = jsonString.indexOf('};');
+                                            if (jsonEnd !== -1) {
+                                                const cleanJson = jsonString.substring(0, jsonEnd + 1);
+                                                try {
+                                                    assetsJson = JSON.parse(cleanJson);
+                                                    extracted = true;
+                                                } catch (e3) {
+                                                    // Try next method
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        const jsonString = scriptContent.substring(jsonStart).replace(/.*assetsJson\s*=\s*/, '');
+                                        const jsonEnd = jsonString.indexOf('};');
+                                        if (jsonEnd !== -1) {
+                                            const cleanJson = jsonString.substring(0, jsonEnd + 1);
+                                            try {
+                                                assetsJson = JSON.parse(cleanJson);
+                                                extracted = true;
+                                            } catch (e3) {
+                                                // Try next method
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (!jsonData) {
+                        throw new Error('Could not find jsonData in HTML file.');
+                    }
+                    
+                    // Store the asset mapping for later use
+                    this.assetsJson = assetsJson || {};
+                    
+                    if (Array.isArray(jsonData)) {
+                        this.conversations = jsonData;
+                    } else if (jsonData.conversations) {
+                        this.conversations = jsonData.conversations;
+                    } else {
+                        throw new Error('Invalid data format. Expected an array of conversations.');
+                    }
+                    
+                    this.createConversationSummaries();
+                    this.renderSidebar();
+                    this.renderConversationView();
+                    this.updateFileInfo(file.name, this.conversations.length);
+                } catch (error) {
+                    console.error('Failed to load conversations:', error);
+                    this.showError(`Failed to load conversations: ${error.message}`);
+                }
+            }
+
+            showLoading() {
+                const conversationList = document.getElementById('conversationList');
+                const conversationView = document.getElementById('conversationView');
+                
+                conversationList.innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        Loading conversations...
+                    </div>
+                `;
+                
+                conversationView.innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        Loading conversations...
+                    </div>
+                `;
+            }
+
+            updateFileInfo(filename, count) {
+                const fileInfo = document.getElementById('fileInfo');
+                fileInfo.innerHTML = `
+                    ✅ Loaded: ${filename}<br>
+                    📊 ${count} conversations
+                `;
+            }
+
+            createConversationSummaries() {
+                this.conversationSummaries = this.conversations.map(conversation => ({
+                    id: conversation.id,
+                    title: conversation.title,
+                    create_time: conversation.create_time,
+                    update_time: conversation.update_time
+                }));
+            }
+
+            formatDate(timestamp) {
+                const date = new Date(timestamp * 1000);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+
+            findPathToCurrentNode(mapping, current_node) {
+                // Find the root node to start from
+                let rootNode = mapping['client-created-root'];
+                
+                // If 'client-created-root' doesn't exist, find the first node without a parent
+                if (!rootNode) {
+                    const rootNodes = Object.values(mapping).filter(node => 
+                        !node.parent || node.parent === null
+                    );
+                    if (rootNodes.length > 0) {
+                        rootNode = rootNodes[0];
+                    }
+                }
+                
+                if (!rootNode) return {};
+                
+                // Find the current_node (user's last message)
+                // First try to get it from conversation.current_node
+                let targetNodeId = null;
+                
+                // If we have access to conversation.current_node, use that
+                if (current_node && mapping[current_node]) {
+                    targetNodeId = current_node;
+                } else {
+                    // Otherwise, find the last message in the mapping
+                    const allNodeIds = Object.keys(mapping);
+                    const lastNodeId = allNodeIds[allNodeIds.length - 1];
+                    if (lastNodeId && mapping[lastNodeId] && mapping[lastNodeId].message) {
+                        targetNodeId = lastNodeId;
+                    }
+                }
+                
+                if (!targetNodeId) return {};
+                
+                // Now find the path from root to this target node
+                const path = [];
+                let currentId = targetNodeId;
+                
+                // Trace back from target to root to find the complete path
+                while (currentId && mapping[currentId]) {
+                    const node = mapping[currentId];
+                    if (node.parent) {
+                        const parentNode = mapping[node.parent];
+                        if (parentNode && parentNode.children) {
+                            const branchIndex = parentNode.children.indexOf(currentId);
+                            if (branchIndex !== -1) {
+                                path.unshift({ nodeId: node.parent, branchIndex });
+                            }
+                        }
+                        currentId = node.parent;
+                    } else {
+                        // Reached the root
+                        break;
+                    }
+                }
+                
+                // Convert path to branch selections
+                const branchSelections = {};
+                path.forEach(({ nodeId, branchIndex }) => {
+                    branchSelections[nodeId] = branchIndex;
+                });
+                
+                return branchSelections;
+            }
+
+            renderSidebar() {
+                const conversationList = document.getElementById('conversationList');
+                
+                if (this.conversationSummaries.length === 0) {
+                    conversationList.innerHTML = `
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            Select an HTML file to load conversations
+                        </div>
+                    `;
+                    return;
+                }
+
+                conversationList.innerHTML = this.conversationSummaries.map(conversation => `
+                    <div class="conversation-item ${this.selectedConversation?.id === conversation.id ? 'selected' : ''}" 
+                         onclick="conversationsViewer.selectConversationById('${conversation.id}')">
+                        <div class="conversation-title">${conversation.title}</div>
+                        <div class="conversation-meta">${this.formatDate(conversation.create_time)}</div>
+                    </div>
+                `).join('');
+            }
+
+            selectConversationById(conversationId) {
+                const conversation = this.conversations.find(c => c.id === conversationId);
+                if (conversation) {
+                    this.selectConversation(conversation);
+                }
+            }
+
+            selectConversation(conversation) {
+                // Save current scroll position for the current conversation
+                if (this.selectedConversation) {
+                    const conversationContent = document.querySelector('.conversation-content');
+                    if (conversationContent) {
+                        this.scrollPositions[this.selectedConversation.id] = conversationContent.scrollTop;
+                    }
+                }
+                
+                this.selectedConversation = conversation;
+                this.selectedBranches = {};
+                this.renderSidebar();
+                this.renderConversationView();
+                
+                // Restore scroll position for the new conversation
+                setTimeout(() => {
+                    const newConversationContent = document.querySelector('.conversation-content');
+                    if (newConversationContent && conversation) {
+                        const savedPosition = this.scrollPositions[conversation.id] || 0;
+                        newConversationContent.scrollTop = savedPosition;
+                    }
+                }, 0);
+            }
+
+            renderConversationView() {
+                const conversationView = document.getElementById('conversationView');
+                
+                if (!this.selectedConversation) {
+                    conversationView.innerHTML = `
+                        <div class="no-conversation">
+                            <h2>Select a conversation to view</h2>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const conversationSummary = {
+                    id: this.selectedConversation.id,
+                    title: this.selectedConversation.title,
+                    create_time: this.selectedConversation.create_time,
+                    update_time: this.selectedConversation.update_time
+                };
+
+                conversationView.innerHTML = `
+                    <div class="conversation-view">
+                        <div class="conversation-header">
+                            <h1>${conversationSummary.title}</h1>
+                            <div class="conversation-info">
+                                <span>Created: ${this.formatDate(conversationSummary.create_time)}</span>
+                                <span>Updated: ${this.formatDate(conversationSummary.update_time)}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="conversation-content">
+                            ${this.renderConversationTree()}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderConversationTree() {
+                if (!this.selectedConversation || !this.selectedConversation.mapping) return '';
+
+                // Find the path to current_node and determine correct branch selections
+                const correctBranches = this.findPathToCurrentNode(this.selectedConversation.mapping, this.selectedConversation.current_node);
+                
+                // Only apply automatic branch selection if no branches have been manually selected
+                const hasManualSelections = Object.keys(this.selectedBranches).length > 0;
+                
+                if (!hasManualSelections) {
+                    // Only update if there are differences
+                    const hasChanges = Object.keys(correctBranches).some(key => 
+                        this.selectedBranches[key] !== correctBranches[key]
+                    );
+                    
+                    if (hasChanges) {
+                        // Update all branch selections at once
+                        Object.entries(correctBranches).forEach(([nodeId, branchIndex]) => {
+                            this.selectedBranches[nodeId] = branchIndex;
+                        });
+                    }
+                }
+
+                const messages = [];
+                let currentNode = this.selectedConversation.mapping['client-created-root'];
+                
+                // If 'client-created-root' doesn't exist, find the first node without a parent
+                if (!currentNode) {
+                    const rootNodes = Object.values(this.selectedConversation.mapping).filter(node => 
+                        !node.parent || node.parent === null
+                    );
+                    if (rootNodes.length > 0) {
+                        currentNode = rootNodes[0];
+                    }
+                }
+                
+                // Find the root message
+                if (currentNode && currentNode.children && currentNode.children.length > 0) {
+                    let currentId = currentNode.children[0];
+                    
+                    // Navigate through the conversation tree
+                    while (currentId && this.selectedConversation.mapping[currentId]) {
+                        const node = this.selectedConversation.mapping[currentId];
+                        if (node.message) {
+                            messages.push({
+                                ...node.message,
+                                nodeId: currentId,
+                                children: node.children || []
+                            });
+                        }
+                        
+                        // Move to the next message based on selected branch or first child
+                        if (node.children && node.children.length > 0) {
+                            const selectedBranch = this.selectedBranches[currentId] || 0;
+                            currentId = node.children[selectedBranch] || node.children[0];
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                return `
+                    <div class="conversation-tree">
+                        ${messages.map((message, index) => `
+                            <div class="message-container">
+                                ${this.renderMessage(message)}
+                                ${this.renderBranchSelector(message)}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            renderMessage(message) {
+                if (!message || !message.content) return '';
+                
+                const role = message.author?.role || 'unknown';
+                
+
+                
+                // Filter out tool messages
+                if ((role === 'tool' && message.content?.content_type!=='multimodal_text') || role === 'system') {
+                    return '';
+                }
+                
+                // Handle different content structures safely
+                let content = '';
+                let contentType = message.content.content_type || 'text';
+                
+                if (message.content.parts && Array.isArray(message.content.parts)) {
+                    // Handle multiple parts - combine text and images
+                    const contentParts = message.content.parts.map((part, index) => {
+                        if (typeof part === 'string') {
+                            return `
+                                <div class="text-content">
+                                    ${marked.parse(part)}
+                                </div>
+                            `;
+                        } else if (part && typeof part === 'object') {
+                            // Handle image parts
+                            if (part.content_type === 'image_asset_pointer' && part.asset_pointer) {
+                                const assetPointer = part.asset_pointer;
+                                let imageSrc = '';
+                                
+                                // Try to find the image in the asset mapping first
+                                if (this.assetsJson[assetPointer]) {
+                                    imageSrc = `./${this.assetsJson[assetPointer]}`;
+                                } else if (assetPointer.startsWith('file-service://')) {
+                                    // Fallback to the original method
+                                    const findImage = message.metadata?.attachments?.find(attachment => attachment.id === assetPointer.replace('file-service://', ''));
+                                    if (findImage) {
+                                        imageSrc = `./${findImage.id}-${findImage.name}`;
+                                    }
+                                }
+                                
+                                if (imageSrc) {
+                                    return `
+                                        <div class="text-content">
+                                            <div class="image-content">
+                                                <img 
+                                                    src="${imageSrc}" 
+                                                    alt="Conversation image" 
+                                                    class="conversation-image"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                                                />
+                                                <div class="image-error" style="display: none;">
+                                                    🖼️ Image: ${imageSrc.split('/').pop()}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    return `
+                                        <div class="text-content">
+                                            <div class="image-error">
+                                                🖼️ Image not found: ${assetPointer}
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                            } else if (part.content_type === 'audio_transcription') {
+                                return `
+                                    <div class="text-content">
+                                        ${marked.parse(part.text)}
+                                    </div>
+                                `;
+                            } else if (part.content_type === 'audio_asset_pointer' && part.asset_pointer) {
+                                const assetPointer = part.asset_pointer;
+                                let audioSrc = '';
+                                
+                                // Try to find the audio file in the asset mapping
+                                if (this.assetsJson[assetPointer]) {
+                                    audioSrc = `./${this.assetsJson[assetPointer]}`;
+                                } else if (assetPointer.startsWith('file-service://')) {
+                                    // Fallback to the original method
+                                    const findAudio = message.metadata?.attachments?.find(attachment => attachment.id === assetPointer.replace('file-service://', ''));
+                                    if (findAudio) {
+                                        audioSrc = `./${findAudio.id}-${findAudio.name}`;
+                                    }
+                                }
+                                
+                                if (audioSrc) {
+                                    return `
+                                        <div class="text-content">
+                                            <div class="audio-content">
+                                                <audio 
+                                                    controls 
+                                                    class="conversation-audio"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                                                >
+                                                    <source src="${audioSrc}" type="audio/wav">
+                                                    <source src="${audioSrc}" type="audio/mpeg">
+                                                    Your browser does not support the audio element.
+                                                </audio>
+                                                <div class="audio-error" style="display: none;">
+                                                    🎵 Audio: ${audioSrc.split('/').pop()}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                            }
+                            // Handle other part types if needed
+                            return '';
+                        }
+                        return '';
+                    }).filter(part => part !== ''); // Remove empty parts
+                    
+                    // Combine all parts
+                    if (contentParts.length > 0) {
+                        content = contentParts.join('');
+                    }
+                } else if (typeof message.content === 'string') {
+                    content = `
+                        <div class="text-content">
+                            ${marked.parse(message.content)}
+                        </div>
+                    `;
+                } else if (message.content.text) {
+                    content = `
+                        <div class="text-content">
+                            ${marked.parse(message.content.text)}
+                        </div>
+                    `;
+                } else if (message.content && typeof message.content === 'object') {
+                    // Handle case where content is an object with text property
+                    if (message.content.text) {
+                        content = `
+                            <div class="text-content">
+                                ${marked.parse(message.content.text)}
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Filter out messages without meaningful content
+                if (!content || content.trim() === '') return '';
+                
+                // Filter out contextual retry user messages (system messages)
+                if (message.metadata?.is_contextual_retry_user_message === true) return '';
+                
+                return `
+                    <div class="message ${role}" title="${message.metadata?.model_slug || ''}">
+                        <div class="message-header">
+                            <span class="role-badge">${role}</span>
+                            ${message.create_time ? `<span class="timestamp">${this.formatDate(message.create_time)}</span>` : ''}
+                        </div>
+                        <div class="message-content">${content}</div>
+                    </div>
+                `;
+            }
+
+            renderBranchSelector(message) {
+                if (!message.children || message.children.length <= 1) return '';
+
+                return `
+                    <div class="branch-selector">
+                        <div class="branch-indicator">
+                            <div class="branch-buttons">
+                                ${message.children.map((childId, childIndex) => {
+                                    const isSelected = this.selectedBranches[message.nodeId] === childIndex;
+                                    return `
+                                        <button class="branch-button ${isSelected ? 'active' : ''}"
+                                                onclick="conversationsViewer.selectBranch('${message.nodeId}', ${childIndex})">
+                                            Response ${childIndex + 1}
+                                        </button>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            selectBranch(messageNodeId, branchIndex) {
+                // Save current scroll position for the current conversation
+                if (this.selectedConversation) {
+                    const conversationContent = document.querySelector('.conversation-content');
+                    if (conversationContent) {
+                        this.scrollPositions[this.selectedConversation.id] = conversationContent.scrollTop;
+                    }
+                }
+                
+                this.selectedBranches[messageNodeId] = branchIndex;
+                this.renderConversationView();
+                
+                // Restore scroll position after rendering
+                setTimeout(() => {
+                    const newConversationContent = document.querySelector('.conversation-content');
+                    if (newConversationContent && this.selectedConversation) {
+                        const savedPosition = this.scrollPositions[this.selectedConversation.id] || 0;
+                        newConversationContent.scrollTop = savedPosition;
+                    }
+                }, 0);
+            }
+
+            showError(message) {
+                const conversationList = document.getElementById('conversationList');
+                const conversationView = document.getElementById('conversationView');
+                
+                conversationList.innerHTML = `
+                    <div class="error">
+                        ${message}
+                    </div>
+                `;
+                
+                conversationView.innerHTML = `
+                    <div class="error">
+                        ${message}
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize the application
+        const conversationsViewer = new ConversationsViewer();
+    </script>
+</body>
+</html>
