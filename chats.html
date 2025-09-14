@@ -946,6 +946,12 @@
                                         </div>
                                     `;
                                 }
+                            } else if (part.content_type === 'audio_transcription') {
+                                return `
+                                    <div class="text-content">
+                                        ${marked.parse(part.text)}
+                                    </div>
+                                `;
                             }
                             // Handle other part types if needed
                             return '';

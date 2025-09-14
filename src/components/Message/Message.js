@@ -51,6 +51,12 @@ const Message = ({ message }) => {
               </div>
             );
           }
+        } else if (part.content_type === 'audio_transcription') {
+          return (
+            <div key={index} className="text-content">
+              <ReactMarkdown>{part.text}</ReactMarkdown>
+            </div>
+          );
         }
         // Handle other part types if needed
         return null;
