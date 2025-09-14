@@ -8,8 +8,10 @@ A modern web application for viewing and navigating through conversation data wi
 - **Branching Support**: Navigate through conversations with multiple response branches
 - **Markdown Rendering**: Full Markdown support for rich text content
 - **Image Display**: Support for image assets within conversations
+- **Audio Playback**: HTML5 audio player support for .wav files
+- **Asset Mapping**: Smart asset resolution for images and audio files
 - **Responsive Design**: Modern, chatroom-like interface that works on all devices
-- **Dual Versions**: Both React application and standalone HTML versions available
+- **Multiple Versions**: React application and two standalone HTML versions available
 
 ## 📁 Project Structure
 
@@ -25,7 +27,8 @@ A modern web application for viewing and navigating through conversation data wi
 │   │   └── BranchSelector/      # Branch switching UI
 │   ├── App.js                   # Main application component
 │   └── index.js                 # Application entry point
-├── chats.html                    # Standalone HTML version
+├── chats.html                    # Basic standalone HTML version (JSON input)
+├── chats_audio_image.html        # Advanced HTML version (HTML input with asset mapping)
 ├── conversations.json            # Sample conversation data
 └── package.json                  # Project dependencies
 ```
@@ -55,14 +58,27 @@ A modern web application for viewing and navigating through conversation data wi
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-### Standalone HTML Version
+### Standalone HTML Versions
+
+#### Basic Version (`chats.html`)
 Simply open `chats.html` in any modern web browser. No server or installation required!
+- Loads conversation data from JSON files
+- Supports basic image display
+- Full conversation tree navigation
+
+#### Advanced Version (`chats_audio_image.html`)
+Open `chats_audio_image.html` for enhanced functionality:
+- Loads conversation data from HTML files containing `jsonData` and `assetsJson`
+- Supports audio playback with HTML5 audio player
+- Smart asset mapping for images and audio files
+- Enhanced multimedia support
 
 ## 📖 Usage
 
 ### Loading Conversations
 1. **React App**: Place your `conversations.json` file in the `public/` folder
-2. **HTML Version**: Use the file input button to load any JSON file
+2. **Basic HTML Version**: Use the file input button to load any JSON file
+3. **Advanced HTML Version**: Use the file input button to load HTML files containing `jsonData` and `assetsJson` variables
 
 ### Navigating Conversations
 - **Left Sidebar**: Click on conversation titles to switch between conversations
@@ -72,7 +88,9 @@ Simply open `chats.html` in any modern web browser. No server or installation re
 ### Supported Content Types
 - **Text**: Full Markdown support (headers, lists, code blocks, links, etc.)
 - **Images**: Automatic detection and display of image assets
-- **Mixed Content**: Messages can contain both text and images
+- **Audio**: HTML5 audio player support for .wav files (Advanced HTML version only)
+- **Mixed Content**: Messages can contain text, images, and audio
+- **Asset Mapping**: Smart resolution of file paths using asset mapping (Advanced HTML version only)
 
 ## 🔧 Technical Details
 
@@ -110,6 +128,8 @@ The application expects conversation data in this format:
 - **Content Parsing**: Handles various content structures safely
 - **Message Filtering**: Filters out system messages, tool messages, and empty content
 - **Branch Navigation**: Maintains branch selection state per message
+- **Asset Resolution**: Smart mapping of asset pointers to actual file paths
+- **Multimedia Support**: HTML5 audio player integration for audio content
 
 ## 🎨 Styling
 
@@ -160,10 +180,18 @@ This project is private and proprietary.
 ### Common Issues
 - **Conversations not displaying**: Check JSON format and ensure root nodes exist
 - **Images not showing**: Verify image files exist in the same directory
+- **Audio not playing**: Ensure audio files are in .wav format and accessible
+- **Asset mapping not working**: Check that HTML file contains both `jsonData` and `assetsJson` variables
 - **Branch switching not working**: Check browser console for JavaScript errors
 
 ### Debug Mode
-The HTML version includes console logging for debugging. Open browser developer tools to see detailed information about conversation loading and rendering.
+The HTML versions include console logging for debugging. Open browser developer tools to see detailed information about conversation loading and rendering.
+
+### File Format Requirements
+- **Basic HTML Version**: Requires JSON files with conversation data
+- **Advanced HTML Version**: Requires HTML files containing:
+  - `var jsonData = [...]` - Array of conversation objects
+  - `var assetsJson = {...}` - Object mapping asset pointers to file paths
 
 ---
 
