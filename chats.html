@@ -155,6 +155,17 @@
             font-size: 0.9rem;
             color: #6c757d;
         }
+        .export-button {
+            margin-left: 16px;
+            padding: 6px 12px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .export-button:hover { background-color: #0056b3; }
 
         /* Conversation Content Styles */
         .conversation-content {
@@ -817,6 +828,7 @@
                             <div class="conversation-info">
                                 <span>Created: ${this.formatDate(conversationSummary.create_time)}</span>
                                 <span>Updated: ${this.formatDate(conversationSummary.update_time)}</span>
+                                <button class="export-button" onclick="conversationsViewer.exportCurrentConversation()">导出对话</button>
                             </div>
                         </div>
                         
@@ -825,6 +837,29 @@
                         </div>
                     </div>
                 `;
+            }
+
+            sanitizeFilename(name) {
+                return (name || 'conversation').toString().replace(/[\/:*?"<>|]+/g, '_').slice(0, 120);
+            }
+
+            exportCurrentConversation() {
+                try {
+                    if (!this.selectedConversation) return;
+                    const exportData = [this.selectedConversation];
+                    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    const title = this.sanitizeFilename(this.selectedConversation.title);
+                    a.href = url;
+                    a.download = `${title || 'conversation'}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                } catch (e) {
+                    this.showError(`Failed to export conversation: ${e.message}`);
+                }
             }
 
             renderConversationTree() {
