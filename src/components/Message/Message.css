@@ -1,110 +1,87 @@
+.message-wrapper {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-wrapper.user {
+  margin-left: auto;
+  margin-right: 0;
+  align-items: flex-end;
+  max-width: 80%;
+}
+
+.message-wrapper.assistant,
+.message-wrapper.system {
+  margin-left: 0;
+  margin-right: auto;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.message-meta {
+  font-size: 0.75rem;
+  color: #868e96;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.role-name {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.message-wrapper.user .role-name {
+  color: #495057;
+}
+
+.message-wrapper.assistant .role-name,
+.message-wrapper.system .role-name {
+  color: #0b57d0;
+}
+
 .message {
-  background-color: #ffffff;
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
+  box-shadow: none;
+  max-width: 100%;
+  margin: 0;
   padding: 16px 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  max-width: 70%;
-  margin-bottom: 16px;
+  border-radius: 8px;
 }
 
 .message.user {
-  background-color: #e3f2fd;
-  color: #212529;
-  border-color: #e3f2fd;
-  margin-left: auto;
-  margin-right: 0;
-  max-width: 60%;
+  background-color: #e5e8fb;
+  border: none;
+  width: 100%;
 }
 
 .message.assistant {
-  background-color: #f8f9fa;
-  color: #212529;
-  border: none;
-  margin-left: 0;
-  margin-right: auto;
-  max-width: 90%;
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  width: 100%;
 }
 
 .message.system {
-  background-color: #6c757d;
-  color: #ffffff;
-  border-color: #6c757d;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 50%;
-  font-size: 0.9rem;
-}
-
-.message-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  gap: 16px;
-}
-
-.role-badge {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: inherit;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-
-.message.user .role-badge {
-  background-color: rgba(21, 101, 192, 0.2);
-  color: #212529;
-}
-
-.message.assistant .role-badge {
-  background-color: #e9ecef;
-  color: #6c757d;
-}
-
-.message.system .role-badge {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-}
-
-.timestamp {
-  font-size: 0.75rem;
-  opacity: 0.7;
-  flex-shrink: 0;
-}
-
-.message.user .timestamp {
-  color: #212529;
-}
-
-.message.assistant .timestamp {
-  color: #6c757d;
-}
-
-.message.system .timestamp {
-  color: rgba(255, 255, 255, 0.8);
+  background-color: transparent;
+  border-left: 3px solid #868e96;
+  padding-left: 20px;
+  width: 100%;
 }
 
 .message-content {
-  line-height: 1.5;
+  line-height: 1.6;
   font-size: 0.95rem;
   white-space: pre-wrap;
   word-wrap: break-word;
-}
-
-.message.user .message-content {
-  color: #212529;
-}
-
-.message.assistant .message-content {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   color: #212529;
 }
 
 .message.system .message-content {
-  color: #ffffff;
+  color: #6c757d;
+  font-style: italic;
 }
 
 /* Image Content Styles */
@@ -113,19 +90,20 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  margin-top: 12px;
 }
 
 .conversation-image {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   cursor: pointer;
   transition: transform 0.2s ease;
 }
 
 .conversation-image:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 .image-error {

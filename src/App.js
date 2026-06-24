@@ -61,19 +61,28 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <Sidebar
-        conversationSummaries={conversationSummaries}
-        selectedConversationId={selectedConversation?.id}
-        onConversationSelect={handleConversationSelect}
-      />
-      
-      <div className="main-content">
-        <ConversationView
-          conversation={selectedConversation}
-          selectedBranches={selectedBranches}
-          onBranchSelect={handleBranchSelect}
+    <div className="app-container">
+      <header className="top-nav">
+        <div className="logo">ArchiveAI</div>
+        <div className="search-bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search archives..." />
+        </div>
+      </header>
+      <div className="app">
+        <Sidebar
+          conversationSummaries={conversationSummaries}
+          selectedConversationId={selectedConversation?.id}
+          onConversationSelect={handleConversationSelect}
         />
+        
+        <div className="main-content">
+          <ConversationView
+            conversation={selectedConversation}
+            selectedBranches={selectedBranches}
+            onBranchSelect={handleBranchSelect}
+          />
+        </div>
       </div>
     </div>
   );

@@ -162,20 +162,31 @@ const Message = ({ message }) => {
   // Filter out contextual retry user messages (system messages)
   if (message.metadata?.is_contextual_retry_user_message === true) return null;
   
+  const formattedDate = message.create_time ? formatDate(message.create_time) : '';
+
   return (
     <div 
-      className={`message ${role}`} 
+      className={`message-wrapper ${role}`} 
       data-message={JSON.stringify(message)}
       title={message.metadata?.model_slug || ''}
     >
-      <div className="message-header">
-        <span className="role-badge">{role}</span>
-        {message.create_time && (
-          <span className="timestamp">{formatDate(message.create_time)}</span>
+      <div className="message-meta">
+        {role === 'assistant' || role === 'system' ? (
+          <>
+            <span className="role-name">{role.toUpperCase()}</span>
+            <span className="timestamp">{formattedDate}</span>
+          </>
+        ) : (
+          <>
+            <span className="timestamp">{formattedDate}</span>
+            <span className="role-name">{role.toUpperCase()}</span>
+          </>
         )}
       </div>
-      <div className="message-content">
-        {finalContent}
+      <div className={`message ${role}`}>
+        <div className="message-content">
+          {finalContent}
+        </div>
       </div>
     </div>
   );

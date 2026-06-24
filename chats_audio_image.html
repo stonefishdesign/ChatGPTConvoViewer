@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,22 +29,45 @@
 
         /* Sidebar Styles */
         .sidebar {
-            width: 300px;
-            background-color: #f8f9fa;
+            width: 280px;
+            background-color: #ffffff;
             border-right: 1px solid #e9ecef;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        .sidebar h2 {
-            padding: 20px;
-            margin: 0;
-            color: #495057;
-            border-bottom: 1px solid #e9ecef;
-            background-color: #ffffff;
-            font-size: 1.5rem;
+        .sidebar-header {
+            padding: 20px 24px;
+        }
+
+        .new-archive-btn {
+            width: 100%;
+            background-color: #0b57d0;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 0;
+            font-size: 0.95rem;
             font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .new-archive-btn:hover {
+            background-color: #084298;
+        }
+
+        .section-label {
+            padding: 0 24px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #868e96;
+            letter-spacing: 0.5px;
         }
 
         .conversation-list {
@@ -53,59 +77,42 @@
         }
 
         .conversation-item {
-            padding: 16px 20px;
-            border-bottom: 1px solid #e9ecef;
+            padding: 12px 24px;
             cursor: pointer;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #495057;
             transition: background-color 0.2s ease;
-            background-color: #ffffff;
         }
 
         .conversation-item:hover {
-            background-color: #f8f9fa;
+            background-color: #f1f3f5;
         }
 
         .conversation-item.selected {
-            background-color: #e3f2fd;
-            border-left: 4px solid #2196f3;
+            background-color: #f4f5f7;
+            border-left: 3px solid #0b57d0;
+            color: #0b57d0;
+            padding-left: 21px;
+            /* Adjust for border */
         }
 
         .conversation-title {
-            font-weight: 500;
-            color: #212529;
-            margin-bottom: 4px;
-            font-size: 0.95rem;
+            font-weight: 600;
+            font-size: 0.9rem;
             line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .conversation-meta {
-            font-size: 0.8rem;
-            color: #6c757d;
+        .conversation-item.selected .conversation-title {
+            color: #0b57d0;
         }
 
         /* File Input Styles */
-        .file-input-container {
-            padding: 16px 20px;
-            border-bottom: 1px solid #e9ecef;
-            background-color: #ffffff;
-        }
-
-        .file-button {
-            width: 100%;
-            padding: 12px 16px;
-            background-color: #007bff;
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: background-color 0.2s ease;
-        }
-
-        .file-button:hover {
-            background-color: #0056b3;
-        }
-
         .file-info {
             margin-top: 8px;
             font-size: 0.8rem;
@@ -131,41 +138,65 @@
         }
 
         .conversation-header {
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            padding: 24px 32px;
             background-color: #ffffff;
             border-bottom: 1px solid #e9ecef;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             flex-shrink: 0;
         }
 
-        .conversation-header h1 {
-            color: #212529;
+        .header-left h1 {
+            font-size: 1.5rem;
             margin-bottom: 8px;
-            font-size: 1.8rem;
-            font-weight: 600;
+            color: #212529;
+            font-weight: 700;
+            margin-top: 0;
         }
 
         .conversation-info {
             display: flex;
-            gap: 24px;
-            font-size: 0.9rem;
-            color: #6c757d;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: #868e96;
         }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .separator {
+            color: #ced4da;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+        }
+
         .export-button {
-            margin-left: 16px;
-            padding: 6px 12px;
-            background-color: #007bff;
-            color: #ffffff;
-            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: #ffffff;
+            color: #212529;
+            border: 1px solid #ced4da;
             border-radius: 6px;
             cursor: pointer;
+            font-weight: 600;
             font-size: 0.85rem;
+            transition: all 0.2s ease;
         }
-        .export-button:hover { background-color: #0056b3; }
+
+        .export-button:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+        }
 
         /* Conversation Content Styles */
         .conversation-content {
@@ -175,7 +206,7 @@
             background-color: #ffffff;
             min-height: 0;
             position: relative;
-            height: 100%; 
+            height: 100%;
             max-height: calc(100vh - 100px);
         }
 
@@ -191,113 +222,85 @@
             flex-direction: column;
         }
 
+        .message-wrapper {
+            margin-bottom: 32px;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .message-wrapper.user {
+            align-items: flex-end;
+        }
+
+        .message-wrapper.assistant,
+        .message-wrapper.system {
+            align-items: flex-start;
+        }
+
+        .message-meta {
+            font-size: 0.75rem;
+            color: #868e96;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .role-name {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .message-wrapper.user .role-name {
+            color: #495057;
+        }
+
+        .message-wrapper.assistant .role-name,
+        .message-wrapper.system .role-name {
+            color: #0b57d0;
+        }
+
         /* Message Styles */
         .message {
-            background-color: #ffffff;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
+            box-shadow: none;
+            max-width: 100%;
+            margin: 0;
             padding: 16px 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            max-width: 70%;
-            margin-bottom: 16px;
+            border-radius: 8px;
         }
 
         .message.user {
-            background-color: #e3f2fd;
-            color: #212529;
-            border-color: #e3f2fd;
-            margin-left: auto;
-            margin-right: 0;
-            max-width: 60%;
+            background-color: #e5e8fb;
+            border: none;
+            width: 100%;
         }
 
         .message.assistant {
-            background-color: #f8f9fa;
-            color: #212529;
-            border: none;
-            margin-left: 0;
-            margin-right: auto;
-            max-width: 90%;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            width: 100%;
         }
 
         .message.system {
-            background-color: #6c757d;
-            color: #ffffff;
-            border-color: #6c757d;
-            margin-left: auto;
-            margin-right: auto;
-            max-width: 50%;
-            font-size: 0.9rem;
-        }
-
-        .message-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            gap: 16px;
-        }
-
-        .role-badge {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: inherit;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            flex-shrink: 0;
-        }
-
-        .message.user .role-badge {
-            background-color: rgba(21, 101, 192, 0.2);
-            color: #1565c0;
-        }
-
-        .message.assistant .role-badge {
-            background-color: #e9ecef;
-            color: #6c757d;
-        }
-
-        .message.system .role-badge {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-        }
-
-        .timestamp {
-            font-size: 0.75rem;
-            opacity: 0.7;
-            flex-shrink: 0;
-        }
-
-        .message.user .timestamp {
-            color: #1565c0;
-        }
-
-        .message.assistant .timestamp {
-            color: #6c757d;
-        }
-
-        .message.system .timestamp {
-            color: rgba(255, 255, 255, 0.8);
+            background-color: transparent;
+            border-left: 3px solid #868e96;
+            padding-left: 20px;
+            width: 100%;
         }
 
         .message-content {
-            line-height: 1.5;
+            line-height: 1.6;
             font-size: 0.95rem;
             word-wrap: break-word;
-        }
-
-        .message.user .message-content {
-            color: #212529;
-        }
-
-        .message.assistant .message-content {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             color: #212529;
         }
 
         .message.system .message-content {
-            color: #ffffff;
+            color: #6c757d;
+            font-style: italic;
         }
 
         /* Branch Selector Styles */
@@ -368,8 +371,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Error State */
@@ -422,7 +430,7 @@
             margin-left: 0;
         }
 
-        .message-container .message.user + .branch-selector {
+        .message-container .message.user+.branch-selector {
             align-self: flex-end;
             margin-right: 0;
         }
@@ -432,25 +440,25 @@
             .app {
                 flex-direction: column;
             }
-            
+
             .sidebar {
                 width: 100%;
                 height: auto;
                 max-height: 200px;
             }
-            
+
             .conversation-header {
                 padding: 16px 20px;
             }
-            
+
             .conversation-content {
                 padding: 20px;
             }
-            
+
             .branch-buttons {
                 flex-direction: row;
             }
-            
+
             .branch-selector {
                 margin-top: 6px;
                 padding: 6px 10px;
@@ -462,21 +470,34 @@
             line-height: 1.6;
         }
 
-        .text-content h1, .text-content h2, .text-content h3, 
-        .text-content h4, .text-content h5, .text-content h6 {
+        .text-content h1,
+        .text-content h2,
+        .text-content h3,
+        .text-content h4,
+        .text-content h5,
+        .text-content h6 {
             margin: 16px 0 8px 0;
             color: inherit;
         }
 
-        .text-content h1 { font-size: 1.5rem; }
-        .text-content h2 { font-size: 1.3rem; }
-        .text-content h3 { font-size: 1.1rem; }
+        .text-content h1 {
+            font-size: 1.5rem;
+        }
+
+        .text-content h2 {
+            font-size: 1.3rem;
+        }
+
+        .text-content h3 {
+            font-size: 1.1rem;
+        }
 
         .text-content p {
             margin: 8px 0;
         }
 
-        .text-content ul, .text-content ol {
+        .text-content ul,
+        .text-content ol {
             margin: 8px 0;
             padding-left: 24px;
         }
@@ -577,14 +598,19 @@
         }
     </style>
 </head>
+
 <body>
     <div class="app">
         <div class="sidebar">
-            <h2>Conversations</h2>
-            <div class="file-input-container">
+            <div class="sidebar-header">
                 <input type="file" id="fileInput" accept=".html" style="display: none;">
-                <button class="file-button" onclick="document.getElementById('fileInput').click()">
-                    📁 Load HTML Conversation File
+                <button class="new-archive-btn" onclick="document.getElementById('fileInput').click()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Archive
                 </button>
                 <div class="file-info" id="fileInfo"></div>
             </div>
@@ -595,7 +621,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="main-content">
             <div id="conversationView">
                 <div class="loading">
@@ -608,7 +634,7 @@
 
     <!-- Add Markdown library -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
+
     <script>
         class ConversationsViewer {
             constructor() {
@@ -618,7 +644,7 @@
                 this.selectedBranches = {};
                 this.scrollPositions = {}; // Store scroll positions for each conversation
                 this.assetsJson = {}; // Store asset mapping for images and audio
-                
+
                 this.init();
             }
 
@@ -642,20 +668,20 @@
                 try {
                     this.showLoading();
                     const text = await file.text();
-                    
+
                     // Parse HTML content to extract jsonData and assetsJson
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(text, 'text/html');
                     const scripts = doc.querySelectorAll('script');
-                    
+
                     let jsonData = null;
                     let assetsJson = null;
-                    
+
                     // Extract jsonData and assetsJson from script tags
                     for (let i = 0; i < scripts.length; i++) {
                         const script = scripts[i];
                         const scriptContent = script.textContent;
-                        
+
                         // Look for jsonData in various formats
                         if (scriptContent.includes('jsonData')) {
                             // Try multiple extraction patterns
@@ -665,7 +691,7 @@
                                 /var jsonData = (\[[\s\S]*?\]);/g,
                                 /jsonData\s*=\s*(\[[\s\S]*?\]);/
                             ];
-                            
+
                             let extracted = false;
                             for (let pattern of patterns) {
                                 const match = scriptContent.match(pattern);
@@ -679,7 +705,7 @@
                                     }
                                 }
                             }
-                            
+
                             // If regex failed, try alternative extraction methods
                             if (!extracted) {
                                 // Method 1: Find the line with "var jsonData = [" and extract everything after the equals sign
@@ -689,16 +715,16 @@
                                     if (line.includes('var jsonData = [') || line.includes('jsonData = [')) {
                                         // Extract everything after "jsonData = " or "var jsonData = "
                                         let jsonString = line.replace(/.*jsonData\s*=\s*/, '');
-                                        
+
                                         // If the JSON spans multiple lines, we need to find the end
                                         if (!jsonString.includes('];')) {
                                             let braceCount = 0;
-                                            
+
                                             for (let char of jsonString) {
                                                 if (char === '[') braceCount++;
                                                 if (char === ']') braceCount--;
                                             }
-                                            
+
                                             // Continue from the next line if needed
                                             for (let k = j + 1; k < lines.length && braceCount > 0; k++) {
                                                 const nextLine = lines[k];
@@ -709,10 +735,10 @@
                                                 }
                                             }
                                         }
-                                        
+
                                         // Clean up the JSON string
                                         jsonString = jsonString.replace(/;$/, '');
-                                        
+
                                         try {
                                             jsonData = JSON.parse(jsonString);
                                             extracted = true;
@@ -722,7 +748,7 @@
                                         }
                                     }
                                 }
-                                
+
                                 // Method 2: Try to find JSON array boundaries more carefully
                                 if (!extracted) {
                                     const jsonStart = scriptContent.indexOf('var jsonData = [');
@@ -757,7 +783,7 @@
                                 }
                             }
                         }
-                        
+
                         // Look for assetsJson
                         if (scriptContent.includes('assetsJson')) {
                             const patterns = [
@@ -766,7 +792,7 @@
                                 /var assetsJson = (\{[\s\S]*?\});/g,
                                 /assetsJson\s*=\s*(\{[\s\S]*?\});/
                             ];
-                            
+
                             let extracted = false;
                             for (let pattern of patterns) {
                                 const match = scriptContent.match(pattern);
@@ -780,7 +806,7 @@
                                     }
                                 }
                             }
-                            
+
                             // If regex failed, try alternative extraction methods for assetsJson
                             if (!extracted) {
                                 // Method 1: Find the line with "var assetsJson = {" and extract everything after the equals sign
@@ -790,16 +816,16 @@
                                     if (line.includes('var assetsJson = {') || line.includes('assetsJson = {')) {
                                         // Extract everything after "assetsJson = " or "var assetsJson = "
                                         let jsonString = line.replace(/.*assetsJson\s*=\s*/, '');
-                                        
+
                                         // If the JSON spans multiple lines, we need to find the end
                                         if (!jsonString.includes('};')) {
                                             let braceCount = 0;
-                                            
+
                                             for (let char of jsonString) {
                                                 if (char === '{') braceCount++;
                                                 if (char === '}') braceCount--;
                                             }
-                                            
+
                                             // Continue from the next line if needed
                                             for (let k = j + 1; k < lines.length && braceCount > 0; k++) {
                                                 const nextLine = lines[k];
@@ -810,10 +836,10 @@
                                                 }
                                             }
                                         }
-                                        
+
                                         // Clean up the JSON string
                                         jsonString = jsonString.replace(/;$/, '');
-                                        
+
                                         try {
                                             assetsJson = JSON.parse(jsonString);
                                             extracted = true;
@@ -823,7 +849,7 @@
                                         }
                                     }
                                 }
-                                
+
                                 // Method 2: Try to find JSON object boundaries more carefully
                                 if (!extracted) {
                                     const jsonStart = scriptContent.indexOf('var assetsJson = {');
@@ -859,14 +885,14 @@
                             }
                         }
                     }
-                    
+
                     if (!jsonData) {
                         throw new Error('Could not find jsonData in HTML file.');
                     }
-                    
+
                     // Store the asset mapping for later use
                     this.assetsJson = assetsJson || {};
-                    
+
                     if (Array.isArray(jsonData)) {
                         this.conversations = jsonData;
                     } else if (jsonData.conversations) {
@@ -891,7 +917,7 @@
                             });
                         }
                     });
-                    
+
                     this.createConversationSummaries();
                     this.renderSidebar();
                     this.renderConversationView();
@@ -905,14 +931,14 @@
             showLoading() {
                 const conversationList = document.getElementById('conversationList');
                 const conversationView = document.getElementById('conversationView');
-                
+
                 conversationList.innerHTML = `
                     <div class="loading">
                         <div class="loading-spinner"></div>
                         Loading conversations...
                     </div>
                 `;
-                
+
                 conversationView.innerHTML = `
                     <div class="loading">
                         <div class="loading-spinner"></div>
@@ -940,32 +966,32 @@
 
             formatDate(timestamp) {
                 const date = new Date(timestamp * 1000);
-                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
                 });
             }
 
             findPathToCurrentNode(mapping, current_node) {
                 // Find the root node to start from
                 let rootNode = mapping['client-created-root'];
-                
+
                 // If 'client-created-root' doesn't exist, find the first node without a parent
                 if (!rootNode) {
-                    const rootNodes = Object.values(mapping).filter(node => 
+                    const rootNodes = Object.values(mapping).filter(node =>
                         !node.parent || node.parent === null
                     );
                     if (rootNodes.length > 0) {
                         rootNode = rootNodes[0];
                     }
                 }
-                
+
                 if (!rootNode) return {};
-                
+
                 // Find the current_node (user's last message)
                 // First try to get it from conversation.current_node
                 let targetNodeId = null;
-                
+
                 // If we have access to conversation.current_node, use that
                 if (current_node && mapping[current_node]) {
                     targetNodeId = current_node;
@@ -977,13 +1003,13 @@
                         targetNodeId = lastNodeId;
                     }
                 }
-                
+
                 if (!targetNodeId) return {};
-                
+
                 // Now find the path from root to this target node
                 const path = [];
                 let currentId = targetNodeId;
-                
+
                 // Trace back from target to root to find the complete path
                 while (currentId && mapping[currentId]) {
                     const node = mapping[currentId];
@@ -1001,19 +1027,19 @@
                         break;
                     }
                 }
-                
+
                 // Convert path to branch selections
                 const branchSelections = {};
                 path.forEach(({ nodeId, branchIndex }) => {
                     branchSelections[nodeId] = branchIndex;
                 });
-                
+
                 return branchSelections;
             }
 
             renderSidebar() {
                 const conversationList = document.getElementById('conversationList');
-                
+
                 if (this.conversationSummaries.length === 0) {
                     conversationList.innerHTML = `
                         <div class="loading">
@@ -1024,11 +1050,19 @@
                     return;
                 }
 
-                conversationList.innerHTML = this.conversationSummaries.map(conversation => `
+                conversationList.innerHTML = `
+                    <div class="conversation-item ${!this.selectedConversation ? 'selected' : ''}" style="cursor: default;" onclick="conversationsViewer.selectConversation(null)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <path d="M3 3v5h5"></path>
+                            <path d="M12 7v5l4 2"></path>
+                        </svg>
+                        <div class="conversation-title">All Conversations</div>
+                    </div>
+                ` + this.conversationSummaries.map(conversation => `
                     <div class="conversation-item ${this.selectedConversation?.id === conversation.id ? 'selected' : ''}" 
                          onclick="conversationsViewer.selectConversationById('${conversation.id}')">
-                        <div class="conversation-title">${conversation.title}</div>
-                        <div class="conversation-meta">${this.formatDate(conversation.create_time)}</div>
+                        <div class="conversation-title" style="font-size: 0.85rem; font-weight: normal; color: #495057;">${conversation.title}</div>
                     </div>
                 `).join('');
             }
@@ -1048,12 +1082,12 @@
                         this.scrollPositions[this.selectedConversation.id] = conversationContent.scrollTop;
                     }
                 }
-                
+
                 this.selectedConversation = conversation;
                 this.selectedBranches = {};
                 this.renderSidebar();
                 this.renderConversationView();
-                
+
                 // Restore scroll position for the new conversation
                 setTimeout(() => {
                     const newConversationContent = document.querySelector('.conversation-content');
@@ -1064,9 +1098,22 @@
                 }, 0);
             }
 
+            formatDateHeader(timestamp) {
+                if (!timestamp) return '';
+                return new Date(timestamp * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+
+            formatTimeAgo(timestamp) {
+                if (!timestamp) return '';
+                const diffInSeconds = Math.floor(Date.now() / 1000 - timestamp);
+                if (diffInSeconds < 3600) return `${Math.max(1, Math.floor(diffInSeconds / 60))} minutes ago`;
+                if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+                return this.formatDateHeader(timestamp);
+            }
+
             renderConversationView() {
                 const conversationView = document.getElementById('conversationView');
-                
+
                 if (!this.selectedConversation) {
                     conversationView.innerHTML = `
                         <div class="no-conversation">
@@ -1086,11 +1133,20 @@
                 conversationView.innerHTML = `
                     <div class="conversation-view">
                         <div class="conversation-header">
-                            <h1>${conversationSummary.title}</h1>
-                            <div class="conversation-info">
-                                <span>Created: ${this.formatDate(conversationSummary.create_time)}</span>
-                                <span>Updated: ${this.formatDate(conversationSummary.update_time)}</span>
-                                <button class="export-button" onclick="conversationsViewer.exportCurrentConversation()">导出对话</button>
+                            <div class="header-left">
+                                <h1>${conversationSummary.title}</h1>
+                                <div class="conversation-info">
+                                    <span class="info-item">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                        Last updated ${this.formatTimeAgo(conversationSummary.update_time)}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="header-right">
+                                <button class="export-button" onclick="conversationsViewer.exportCurrentConversation()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                    Export
+                                </button>
                             </div>
                         </div>
                         
@@ -1129,16 +1185,16 @@
 
                 // Find the path to current_node and determine correct branch selections
                 const correctBranches = this.findPathToCurrentNode(this.selectedConversation.mapping, this.selectedConversation.current_node);
-                
+
                 // Only apply automatic branch selection if no branches have been manually selected
                 const hasManualSelections = Object.keys(this.selectedBranches).length > 0;
-                
+
                 if (!hasManualSelections) {
                     // Only update if there are differences
-                    const hasChanges = Object.keys(correctBranches).some(key => 
+                    const hasChanges = Object.keys(correctBranches).some(key =>
                         this.selectedBranches[key] !== correctBranches[key]
                     );
-                    
+
                     if (hasChanges) {
                         // Update all branch selections at once
                         Object.entries(correctBranches).forEach(([nodeId, branchIndex]) => {
@@ -1149,21 +1205,21 @@
 
                 const messages = [];
                 let currentNode = this.selectedConversation.mapping['client-created-root'];
-                
+
                 // If 'client-created-root' doesn't exist, find the first node without a parent
                 if (!currentNode) {
-                    const rootNodes = Object.values(this.selectedConversation.mapping).filter(node => 
+                    const rootNodes = Object.values(this.selectedConversation.mapping).filter(node =>
                         !node.parent || node.parent === null
                     );
                     if (rootNodes.length > 0) {
                         currentNode = rootNodes[0];
                     }
                 }
-                
+
                 // Find the root message
                 if (currentNode && currentNode.children && currentNode.children.length > 0) {
                     let currentId = currentNode.children[0];
-                    
+
                     // Navigate through the conversation tree
                     while (currentId && this.selectedConversation.mapping[currentId]) {
                         const node = this.selectedConversation.mapping[currentId];
@@ -1174,7 +1230,7 @@
                                 children: node.children || []
                             });
                         }
-                        
+
                         // Move to the next message based on selected branch or first child
                         if (node.children && node.children.length > 0) {
                             const selectedBranch = this.selectedBranches[currentId] || 0;
@@ -1199,20 +1255,20 @@
 
             renderMessage(message) {
                 if (!message || !message.content) return '';
-                
-                const role = message.author?.role || 'unknown';
-                
 
-                
+                const role = message.author?.role || 'unknown';
+
+
+
                 // Filter out tool messages
-                if ((role === 'tool' && message.content?.content_type!=='multimodal_text') || role === 'system') {
+                if ((role === 'tool' && message.content?.content_type !== 'multimodal_text') || role === 'system') {
                     return '';
                 }
-                
+
                 // Handle different content structures safely
                 let content = '';
                 let contentType = message.content.content_type || 'text';
-                
+
                 if (message.content.parts && Array.isArray(message.content.parts)) {
                     // Handle multiple parts - combine text and images
                     const contentParts = message.content.parts.map((part, index) => {
@@ -1227,7 +1283,7 @@
                             if (part.content_type === 'image_asset_pointer' && part.asset_pointer) {
                                 const assetPointer = part.asset_pointer;
                                 let imageSrc = '';
-                                
+
                                 // Try to find the image in the asset mapping first
                                 if (this.assetsJson[assetPointer]) {
                                     imageSrc = `./${this.assetsJson[assetPointer]}`;
@@ -1238,7 +1294,7 @@
                                         imageSrc = `./${findImage.id}-${findImage.name}`;
                                     }
                                 }
-                                
+
                                 if (imageSrc) {
                                     return `
                                         <div class="text-content">
@@ -1273,7 +1329,7 @@
                             } else if (part.content_type === 'audio_asset_pointer' && part.asset_pointer) {
                                 const assetPointer = part.asset_pointer;
                                 let audioSrc = '';
-                                
+
                                 // Try to find the audio file in the asset mapping
                                 if (this.assetsJson[assetPointer]) {
                                     audioSrc = `./${this.assetsJson[assetPointer]}`;
@@ -1284,7 +1340,7 @@
                                         audioSrc = `./${findAudio.id}-${findAudio.name}`;
                                     }
                                 }
-                                
+
                                 if (audioSrc) {
                                     return `
                                         <div class="text-content">
@@ -1311,7 +1367,7 @@
                         }
                         return '';
                     }).filter(part => part !== ''); // Remove empty parts
-                    
+
                     // Combine all parts
                     if (contentParts.length > 0) {
                         content = contentParts.join('');
@@ -1338,13 +1394,13 @@
                         `;
                     }
                 }
-                
+
                 // Append attachments from metadata
                 if (message.metadata && message.metadata.attachments && Array.isArray(message.metadata.attachments)) {
                     const attachmentsHtml = message.metadata.attachments.map(attachment => {
                         const mime = attachment.mime_type || '';
                         let mediaTag = '';
-                        
+
                         let resolvedSrc = `./${attachment.id}.dat`;
                         if (this.assetsJson) {
                             const assetPointer = `file-service://${attachment.id}`;
@@ -1354,7 +1410,7 @@
                                 resolvedSrc = `./${this.assetsJson[attachment.id]}`;
                             }
                         }
-                        
+
                         if (mime.startsWith('image/')) {
                             mediaTag = `
                                 <div class="image-content">
@@ -1382,20 +1438,28 @@
                     }).join('');
                     content += attachmentsHtml;
                 }
-                
+
                 // Filter out messages without meaningful content
                 if (!content || content.trim() === '') return '';
-                
+
                 // Filter out contextual retry user messages (system messages)
                 if (message.metadata?.is_contextual_retry_user_message === true) return '';
-                
+
+                const formattedDate = message.create_time ? this.formatDate(message.create_time) : '';
                 return `
-                    <div class="message ${role}" title="${message.metadata?.model_slug || ''}">
-                        <div class="message-header">
-                            <span class="role-badge">${role}</span>
-                            ${message.create_time ? `<span class="timestamp">${this.formatDate(message.create_time)}</span>` : ''}
+                    <div class="message-wrapper ${role}" title="${message.metadata?.model_slug || ''}">
+                        <div class="message-meta">
+                            ${role === 'assistant' || role === 'system' ? `
+                                <span class="role-name">${role.toUpperCase()}</span>
+                                <span class="timestamp">${formattedDate}</span>
+                            ` : `
+                                <span class="timestamp">${formattedDate}</span>
+                                <span class="role-name">${role.toUpperCase()}</span>
+                            `}
                         </div>
-                        <div class="message-content">${content}</div>
+                        <div class="message ${role}">
+                            <div class="message-content">${content}</div>
+                        </div>
                     </div>
                 `;
             }
@@ -1408,14 +1472,14 @@
                         <div class="branch-indicator">
                             <div class="branch-buttons">
                                 ${message.children.map((childId, childIndex) => {
-                                    const isSelected = this.selectedBranches[message.nodeId] === childIndex;
-                                    return `
+                    const isSelected = this.selectedBranches[message.nodeId] === childIndex;
+                    return `
                                         <button class="branch-button ${isSelected ? 'active' : ''}"
                                                 onclick="conversationsViewer.selectBranch('${message.nodeId}', ${childIndex})">
                                             Response ${childIndex + 1}
                                         </button>
                                     `;
-                                }).join('')}
+                }).join('')}
                             </div>
                         </div>
                     </div>
@@ -1430,10 +1494,10 @@
                         this.scrollPositions[this.selectedConversation.id] = conversationContent.scrollTop;
                     }
                 }
-                
+
                 this.selectedBranches[messageNodeId] = branchIndex;
                 this.renderConversationView();
-                
+
                 // Restore scroll position after rendering
                 setTimeout(() => {
                     const newConversationContent = document.querySelector('.conversation-content');
@@ -1447,13 +1511,13 @@
             showError(message) {
                 const conversationList = document.getElementById('conversationList');
                 const conversationView = document.getElementById('conversationView');
-                
+
                 conversationList.innerHTML = `
                     <div class="error">
                         ${message}
                     </div>
                 `;
-                
+
                 conversationView.innerHTML = `
                     <div class="error">
                         ${message}
@@ -1466,4 +1530,5 @@
         const conversationsViewer = new ConversationsViewer();
     </script>
 </body>
+
 </html>

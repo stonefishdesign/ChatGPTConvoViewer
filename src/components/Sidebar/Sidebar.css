@@ -1,20 +1,43 @@
 .sidebar {
-  width: 300px;
-  background-color: #f8f9fa;
+  width: 280px;
+  background-color: #ffffff;
   border-right: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-.sidebar h2 {
-  padding: 20px;
-  margin: 0;
-  color: #495057;
-  border-bottom: 1px solid #e9ecef;
-  background-color: #ffffff;
-  font-size: 1.5rem;
+.sidebar-header {
+  padding: 20px 24px;
+}
+
+.new-archive-btn {
+  width: 100%;
+  background-color: #0b57d0;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 0.95rem;
   font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.new-archive-btn:hover {
+  background-color: #084298;
+}
+
+.section-label {
+  padding: 0 24px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #868e96;
+  letter-spacing: 0.5px;
 }
 
 .conversation-list {
@@ -24,33 +47,37 @@
 }
 
 .conversation-item {
-  padding: 16px 20px;
-  border-bottom: 1px solid #e9ecef;
+  padding: 12px 24px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  background-color: #ffffff;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #495057;
 }
 
 .conversation-item:hover {
-  background-color: #f8f9fa;
+  background-color: #f1f3f5;
 }
 
 .conversation-item.selected {
-  background-color: #e3f2fd;
-  border-left: 4px solid #2196f3;
+  background-color: #f4f5f7;
+  border-left: 3px solid #0b57d0;
+  color: #0b57d0;
+  padding-left: 21px; /* Adjust for border */
 }
 
 .conversation-title {
-  font-weight: 500;
-  color: #212529;
-  margin-bottom: 4px;
-  font-size: 0.95rem;
+  font-weight: 600;
+  font-size: 0.9rem;
   line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.conversation-meta {
-  font-size: 0.8rem;
-  color: #6c757d;
+.conversation-item.selected .conversation-title {
+  color: #0b57d0;
 }
 
 /* Scrollbar Styling */
@@ -59,16 +86,16 @@
 }
 
 .conversation-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 .conversation-list::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: #dee2e6;
   border-radius: 4px;
 }
 
 .conversation-list::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #ced4da;
 }
 
 /* Responsive Design */
