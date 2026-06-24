@@ -68,7 +68,7 @@ Simply open `chats.html` in any modern web browser. No server or installation re
 
 #### Advanced Version (`chats_audio_image.html`)
 Open `chats_audio_image.html` for enhanced functionality:
-- Loads conversation data from HTML files containing `jsonData` and `assetsJson`
+- Loads conversation data from HTML files containing `jsonData` and `assetsJson` (chat.html from the unzipped folder)
 - Supports audio playback with HTML5 audio player
 - Smart asset mapping for images and audio files
 - Enhanced multimedia support

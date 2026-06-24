@@ -82,13 +82,82 @@ const Message = ({ message }) => {
     );
   }
   
+  let finalContent = [];
+  if (Array.isArray(content)) {
+    finalContent = [...content];
+  } else if (content) {
+    finalContent = [content];
+  }
+  
+  if (message.metadata && message.metadata.attachments && Array.isArray(message.metadata.attachments)) {
+    const attachmentsElements = message.metadata.attachments.map((attachment, idx) => {
+      const mime = attachment.mime_type || '';
+      let mediaTag = null;
+      
+      const fileSrc = `./${attachment.id}.dat`;
+      const fallbackSrc = `./${attachment.id}-${attachment.name}`;
+      
+      if (mime.startsWith('image/')) {
+        mediaTag = (
+          <div className="image-content">
+            <img 
+              src={fileSrc} 
+              alt={attachment.name} 
+              className="conversation-image" 
+              style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', margin: '8px 0' }}
+              onError={(e) => {
+                if (!e.target.dataset.fb) {
+                  e.target.dataset.fb = '1';
+                  e.target.src = fallbackSrc;
+                } else {
+                  e.target.style.display = 'none';
+                }
+              }}
+            />
+          </div>
+        );
+      } else if (mime.startsWith('audio/')) {
+        mediaTag = (
+          <div className="audio-content">
+            <audio 
+              controls 
+              className="conversation-audio" 
+              style={{ width: '100%', maxWidth: '400px', margin: '8px 0' }}
+              src={fileSrc}
+              onError={(e) => {
+                if (!e.target.dataset.fb) {
+                  e.target.dataset.fb = '1';
+                  e.target.src = fallbackSrc;
+                }
+              }}
+            />
+          </div>
+        );
+      }
+      
+      return (
+        <div key={`attachment-${idx}`} className="text-content attachment-block" style={{ marginTop: '12px', padding: '12px', backgroundColor: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: '8px' }}>
+          <div style={{ fontSize: '0.9em', marginBottom: mediaTag ? '8px' : '0' }}>
+            <a href={fileSrc} target="_blank" rel="noopener noreferrer" download={attachment.name} style={{ textDecoration: 'none', color: '#007bff', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span role="img" aria-label="attachment">📎</span> <strong>{attachment.name}</strong> 
+              <span style={{ color: '#6c757d', fontSize: '0.9em' }}>{((attachment.size || 0) / 1024).toFixed(1)} KB</span>
+            </a>
+          </div>
+          {mediaTag}
+        </div>
+      );
+    });
+    
+    finalContent = [...finalContent, ...attachmentsElements];
+  }
+
   const role = message.author?.role || 'unknown';
   
   // Filter out tool messages
   if (role === 'tool' || role === 'system') return null;
   
   // Filter out messages without meaningful content
-  if (!content || (typeof content === 'string' && content.trim() === '')) return null;
+  if (finalContent.length === 0) return null;
   
   // Filter out contextual retry user messages (system messages)
   if (message.metadata?.is_contextual_retry_user_message === true) return null;
@@ -106,7 +175,7 @@ const Message = ({ message }) => {
         )}
       </div>
       <div className="message-content">
-        {content}
+        {finalContent}
       </div>
     </div>
   );

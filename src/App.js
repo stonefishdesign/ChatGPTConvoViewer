@@ -10,6 +10,24 @@ function App() {
   const [selectedBranches, setSelectedBranches] = useState({});
 
   useEffect(() => {
+    // Process conversations to reconstruct tree if needed (new export format)
+    conversationsData.forEach(conv => {
+      if (conv.mapping) {
+        Object.values(conv.mapping).forEach(node => {
+          if (node && !node.children) {
+            node.children = [];
+          }
+        });
+        Object.values(conv.mapping).forEach(node => {
+          if (node && node.parent && conv.mapping[node.parent]) {
+            if (!conv.mapping[node.parent].children.includes(node.id)) {
+              conv.mapping[node.parent].children.push(node.id);
+            }
+          }
+        });
+      }
+    });
+
     // Process conversations to create summaries for sidebar
     const summaries = conversationsData.map(conversation => ({
       id: conversation.id,

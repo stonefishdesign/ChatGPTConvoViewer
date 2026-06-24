@@ -874,6 +874,23 @@
                     } else {
                         throw new Error('Invalid data format. Expected an array of conversations.');
                     }
+
+                    // Preprocess conversations to rebuild 'children' arrays from 'parent' pointers if they are missing
+                    this.conversations.forEach(conv => {
+                        if (conv.mapping) {
+                            Object.values(conv.mapping).forEach(node => {
+                                if (!node.children) node.children = [];
+                            });
+                            Object.keys(conv.mapping).forEach(nodeId => {
+                                const node = conv.mapping[nodeId];
+                                if (node.parent && conv.mapping[node.parent]) {
+                                    if (!conv.mapping[node.parent].children.includes(nodeId)) {
+                                        conv.mapping[node.parent].children.push(nodeId);
+                                    }
+                                }
+                            });
+                        }
+                    });
                     
                     this.createConversationSummaries();
                     this.renderSidebar();
@@ -1320,6 +1337,50 @@
                             </div>
                         `;
                     }
+                }
+                
+                // Append attachments from metadata
+                if (message.metadata && message.metadata.attachments && Array.isArray(message.metadata.attachments)) {
+                    const attachmentsHtml = message.metadata.attachments.map(attachment => {
+                        const mime = attachment.mime_type || '';
+                        let mediaTag = '';
+                        
+                        let resolvedSrc = `./${attachment.id}.dat`;
+                        if (this.assetsJson) {
+                            const assetPointer = `file-service://${attachment.id}`;
+                            if (this.assetsJson[assetPointer]) {
+                                resolvedSrc = `./${this.assetsJson[assetPointer]}`;
+                            } else if (this.assetsJson[attachment.id]) {
+                                resolvedSrc = `./${this.assetsJson[attachment.id]}`;
+                            }
+                        }
+                        
+                        if (mime.startsWith('image/')) {
+                            mediaTag = `
+                                <div class="image-content">
+                                    <img src="${resolvedSrc}" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='./${attachment.id}.dat';}else if(this.dataset.fb==1){this.dataset.fb=2;this.src='./${attachment.id}-${attachment.name}';}else{this.onerror=null;}" alt="${attachment.name}" class="conversation-image" style="max-width: 100%; height: auto; border-radius: 8px; margin: 8px 0;" />
+                                </div>
+                            `;
+                        } else if (mime.startsWith('audio/')) {
+                            mediaTag = `
+                                <div class="audio-content">
+                                    <audio controls class="conversation-audio" style="width: 100%; max-width: 400px; margin: 8px 0;" src="${resolvedSrc}" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='./${attachment.id}.dat';}else if(this.dataset.fb==1){this.dataset.fb=2;this.src='./${attachment.id}-${attachment.name}';}else{this.onerror=null;}"></audio>
+                                </div>
+                            `;
+                        }
+                        return `
+                            <div class="text-content attachment-block" style="margin-top: 12px; padding: 12px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px;">
+                                <div style="font-size: 0.9em; margin-bottom: ${mediaTag ? '8px' : '0'};">
+                                    <a href="${resolvedSrc}" target="_blank" download="${attachment.name}" style="text-decoration: none; color: #007bff; display: flex; align-items: center; gap: 6px;">
+                                        📎 <strong>${attachment.name}</strong> 
+                                        <span style="color: #6c757d; font-size: 0.9em;">(${(attachment.size / 1024).toFixed(1)} KB)</span>
+                                    </a>
+                                </div>
+                                ${mediaTag}
+                            </div>
+                        `;
+                    }).join('');
+                    content += attachmentsHtml;
                 }
                 
                 // Filter out messages without meaningful content
